@@ -1,5 +1,25 @@
-from flask import Flask , render_template
+# ----------------------
+import os 
 
+# ----------------------
+from flask import Flask, render_template
+from dotenv import load_dotenv
+
+
+
+# ----------------------
+import db_connection
+import db_classes 
+
+
+from db_classes import Department, User, AddOrder, Order
+
+# Load environment variables from the .env file
+load_dotenv()
+
+app = db_connection.app
+db = db_connection.db
+bcrypt = db_connection.bcrypt
 
 app = Flask(__name__, static_url_path='/static')
 
