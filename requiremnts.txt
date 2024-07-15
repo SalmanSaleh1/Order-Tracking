@@ -1,5 +1,8 @@
 Flask
-Flask-SQLAlchemy
+Flask-WTF
 Flask-Bcrypt
+Flask-SQLAlchemy
 python-dotenv
+WTForms
 pymysql
+cryptography
