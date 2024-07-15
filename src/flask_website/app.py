@@ -6,22 +6,16 @@ from flask import Flask, render_template
 from dotenv import load_dotenv
 
 
-
 # ----------------------
+
+import forms
 import db_connection
-import db_classes 
-
-
-from db_classes import Department, User, AddOrder, Order
-
-# Load environment variables from the .env file
-load_dotenv()
 
 app = db_connection.app
 db = db_connection.db
 bcrypt = db_connection.bcrypt
 
-app = Flask(__name__, static_url_path='/static')
+
 
 @app.route('/')
 def home():
@@ -35,6 +29,10 @@ def orders():
 def order_history():
     return render_template('order_history.html')
 
+# Route to call add_order function from forms.py
+@app.route('/add_order', methods=['GET', 'POST'])
+def add_order():
+    return forms.add_order()
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
