@@ -4,8 +4,12 @@
 
 {% block body %}
 
-
-<h1> orders</h1>
-
+<div class="container">
+    <h1>Orders</h1>
+    
+    <!-- Button to navigate to add_order page -->
+    <a href="{{ url_for('add_order') }}" class="btn btn-primary mb-3">Add Order</a>
+    
+</div>
 
 {% endblock %}

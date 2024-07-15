@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Add Order{% endblock %}
+{% block body %}
+<div class="container">
+    <h2>Add Order</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+            {{ form.order_name.label(class="form-label block text-gray-700") }}
+            {{ form.order_name(class="form-control w-full border p-2 rounded-lg", placeholder="Enter order name") }}
+            {% for error in form.order_name.errors %}
+            <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </div>
+        <div class="mb-3">
+            {{ form.order_description.label(class="form-label block text-gray-700") }}
+            {{ form.order_description(class="form-control w-full border p-2 rounded-lg", placeholder="Enter order description") }}
+            {% for error in form.order_description.errors %}
+            <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </div>
+        <div class="mb-3">
+            {{ form.department_name.label(class="form-label block text-gray-700") }}
+            {{ form.department_name(class="form-control w-full border p-2 rounded-lg", placeholder="Enter department name") }}
+            {% for error in form.department_name.errors %}
+            <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+{% endblock %}
