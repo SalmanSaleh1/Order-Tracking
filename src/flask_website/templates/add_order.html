@@ -3,30 +3,37 @@
 {% block body %}
 <div class="container">
     <h2>Add Order</h2>
-    <form method="POST">
+    <form method="POST" action="{{ url_for('add_order') }}">
         {{ form.hidden_tag() }}
-        <div class="mb-3">
-            {{ form.order_name.label(class="form-label block text-gray-700") }}
-            {{ form.order_name(class="form-control w-full border p-2 rounded-lg", placeholder="Enter order name") }}
+        <div class="form-group">
+            {{ form.order_name.label(class="form-control-label") }}
+            {{ form.order_name(class="form-control") }}
             {% for error in form.order_name.errors %}
-            <span style="color: red;">{{ error }}</span>
+                <span class="text-danger">{{ error }}</span>
             {% endfor %}
         </div>
-        <div class="mb-3">
-            {{ form.order_description.label(class="form-label block text-gray-700") }}
-            {{ form.order_description(class="form-control w-full border p-2 rounded-lg", placeholder="Enter order description") }}
+        <div class="form-group">
+            {{ form.order_description.label(class="form-control-label") }}
+            {{ form.order_description(class="form-control") }}
             {% for error in form.order_description.errors %}
-            <span style="color: red;">{{ error }}</span>
+                <span class="text-danger">{{ error }}</span>
             {% endfor %}
         </div>
-        <div class="mb-3">
-            {{ form.department_name.label(class="form-label block text-gray-700") }}
-            {{ form.department_name(class="form-control w-full border p-2 rounded-lg", placeholder="Enter department name") }}
+        <div class="form-group">
+            {{ form.department_name.label(class="form-control-label") }}
+            {{ form.department_name(class="form-control") }}
             {% for error in form.department_name.errors %}
-            <span style="color: red;">{{ error }}</span>
+                <span class="text-danger">{{ error }}</span>
             {% endfor %}
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <div class="form-group">
+            {{ form.order_state.label(class="form-control-label") }}
+            {{ form.order_state(class="form-control") }}
+            {% for error in form.order_state.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn btn-primary">Add Order</button>
     </form>
 </div>
 {% endblock %}

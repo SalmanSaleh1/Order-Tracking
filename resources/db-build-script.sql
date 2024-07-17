@@ -1,16 +1,19 @@
-CREATE DATABASE IF NOT EXISTS Order_tracking;
-USE Order_tracking;
+CREATE DATABASE IF NOT EXISTS order_tracking;
+USE order_tracking;
+
+CREATE USER 'dbuser'@'%' IDENTIFIED BY 'changeme';
+GRANT ALL PRIVILEGES ON order_tracking.* TO 'dbuser'@'%';
+FLUSH PRIVILEGES;
 
 -- TABLES
 
 CREATE TABLE IF NOT EXISTS addOrders (
-    order_id INT NOT NULL AUTO_INCREMENT,
-    order_name VARCHAR(255),
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    order_name VARCHAR(255) NOT NULL,
     order_description VARCHAR(255),
-    order_state VARCHAR(255),
-    order_date DATETIME,
     department_name VARCHAR(255) NOT NULL,
-    PRIMARY KEY (order_id)
+    order_state VARCHAR(255) DEFAULT 'waiting',
+    order_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS Orders (
