@@ -7,6 +7,26 @@
 <div class="container">
     <h1>Orders</h1>
     
+    <!-- Display last 5 orders -->
+    <div class="row">
+        {% for order in last_orders %}
+            <div class="col-md-4">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        Order #{{ order.order_id }}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ order.order_name }}</h5>
+                        <p class="card-text">{{ order.order_description }}</p>
+                        <p class="card-text"><strong>Department:</strong> {{ order.department_name }}</p>
+                        <p class="card-text"><strong>State:</strong> {{ order.order_state }}</p>
+                        <a href="{{ url_for('edit_order', order_id=order.order_id) }}" class="btn btn-secondary">Edit</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
     <!-- Button to navigate to add_order page -->
     <a href="{{ url_for('add_order') }}" class="btn btn-primary mb-3">Add Order</a>
     

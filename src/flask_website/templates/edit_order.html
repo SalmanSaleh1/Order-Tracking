@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Order{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <h1>Edit Order #{{ order.order_id }}</h1>
+    
+    <form method="POST" action="{{ url_for('edit_order', order_id=order.order_id) }}">
+        {{ form.hidden_tag() }}
+        
+        <div class="form-group">
+            <label for="order_name">Order Name</label>
+            {{ form.order_name(class="form-control") }}
+        </div>
+        
+        <div class="form-group">
+            <label for="order_description">Order Description</label>
+            {{ form.order_description(class="form-control") }}
+        </div>
+        
+        <div class="form-group">
+            <label for="department_name">Department Name</label>
+            {{ form.department_name(class="form-control") }}
+        </div>
+        
+        <div class="form-group">
+            <label for="order_state">Order State</label>
+            {{ form.order_state(class="form-control") }}
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Update Order</button>
+    </form>
+    
+</div>
+
+{% endblock %}

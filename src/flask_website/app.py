@@ -23,11 +23,31 @@ def home():
 
 @app.route('/orders')
 def orders():
-    return render_template('orders.html')
+    # Retrieve the last 5 orders that are not in the 'completed' state
+    last_orders = AddOrder.query.filter(AddOrder.order_state != 'completed').order_by(AddOrder.order_date.desc()).limit(5).all()
+    return render_template('orders.html', last_orders=last_orders)
+
+@app.route('/edit_order/<int:order_id>', methods=['GET', 'POST'])
+def edit_order(order_id):
+    order = AddOrder.query.get_or_404(order_id)
+    form = AddOrderForm(obj=order)
+    if form.validate_on_submit():
+        order.order_name = form.order_name.data
+        order.order_description = form.order_description.data
+        order.department_name = form.department_name.data
+        order.order_state = form.order_state.data
+        db.session.commit()
+        flash('Order updated successfully!', 'success')
+        return redirect(url_for('orders'))
+    return render_template('edit_order.html', form=form, order=order)
+
 
 @app.route('/order_history')
 def order_history():
-    return render_template('order_history.html')
+    # Retrieve orders that are in the 'completed' state
+    completed_orders = AddOrder.query.filter_by(order_state='completed').order_by(AddOrder.order_date.desc()).all()
+    return render_template('order_history.html', completed_orders=completed_orders)
+
 
 # Route for adding an order
 @app.route('/add_order', methods=['GET', 'POST'])
@@ -45,6 +65,13 @@ def add_order():
         flash('Order added successfully!', 'success')
         return redirect(url_for('orders'))  # Assuming 'orders' is the route to display all orders
     return render_template('add_order.html', form=form)
+
+@app.route('/view_order/<int:order_id>')
+def view_order(order_id):
+    # Retrieve the order by its ID
+    order = AddOrder.query.get_or_404(order_id)
+    return render_template('view_order.html', order=order)
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
