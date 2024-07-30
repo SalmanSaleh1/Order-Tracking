@@ -2,7 +2,7 @@
 import os 
 
 # ----------------------
-from flask import Flask, render_template, flash, redirect, url_for
+from flask import Flask, render_template, flash, redirect, url_for, request
 from dotenv import load_dotenv
 
 
@@ -21,13 +21,11 @@ bcrypt = db_connection.bcrypt
 def home():
     return render_template('home.html')
 
-
 @app.route('/orders')
 def orders():
-    # Retrieve the last 5 orders that are not in the 'completed' state
-    last_orders = AddOrder.query.filter(AddOrder.order_state != 'completed').order_by(AddOrder.order_date.desc()).limit(5).all()
+    # Fetch orders sorted by order_id in descending order (newest first)
+    last_orders = AddOrder.query.order_by(AddOrder.order_id.desc()).limit(6).all()
     return render_template('orders.html', last_orders=last_orders)
-
 
 @app.route('/edit_order/<int:order_id>', methods=['GET', 'POST'])
 def edit_order(order_id):
@@ -94,6 +92,15 @@ def get_order(order_id):
 @app.route('/order_info')
 def order_info():
     return render_template('order_info.html')
+
+
+@app.route('/delete_order/<int:order_id>', methods=['POST'])
+def delete_order(order_id):
+    order = AddOrder.query.get_or_404(order_id)
+    db.session.delete(order)
+    db.session.commit()
+    flash('Order deleted successfully!', 'success')
+    return redirect(request.referrer)
 
 
 if __name__ == "__main__":
