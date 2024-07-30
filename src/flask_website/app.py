@@ -21,11 +21,13 @@ bcrypt = db_connection.bcrypt
 def home():
     return render_template('home.html')
 
+
 @app.route('/orders')
 def orders():
     # Retrieve the last 5 orders that are not in the 'completed' state
     last_orders = AddOrder.query.filter(AddOrder.order_state != 'completed').order_by(AddOrder.order_date.desc()).limit(5).all()
     return render_template('orders.html', last_orders=last_orders)
+
 
 @app.route('/edit_order/<int:order_id>', methods=['GET', 'POST'])
 def edit_order(order_id):
@@ -66,11 +68,32 @@ def add_order():
         return redirect(url_for('orders'))  # Assuming 'orders' is the route to display all orders
     return render_template('add_order.html', form=form)
 
+
 @app.route('/view_order/<int:order_id>')
 def view_order(order_id):
     # Retrieve the order by its ID
     order = AddOrder.query.get_or_404(order_id)
     return render_template('view_order.html', order=order)
+
+
+# api route 
+@app.route('/api/order/<int:order_id>', methods=['GET'])
+def get_order(order_id):
+    order = AddOrder.query.get(order_id)
+    if order:
+        return {
+            'order_id': order.order_id,
+            'order_name': order.order_name,
+            'order_description': order.order_description,
+            'department_name': order.department_name,
+            'order_state': order.order_state,
+            'order_date': order.order_date.strftime('%Y-%m-%d %H:%M:%S')
+        }, 200
+    return {'error': 'Order not found'}, 404
+
+@app.route('/order_info')
+def order_info():
+    return render_template('order_info.html')
 
 
 if __name__ == "__main__":
