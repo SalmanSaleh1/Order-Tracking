@@ -27,6 +27,14 @@ def orders():
     last_orders = AddOrder.query.filter(AddOrder.order_state != 'completed').order_by(AddOrder.order_id.desc()).limit(6).all()
     return render_template('orders.html', last_orders=last_orders)
 
+@app.route('/change_order_state/<int:order_id>', methods=['POST'])
+def change_order_state(order_id):
+    order = AddOrder.query.get(order_id)
+    if order:
+        new_state = request.form.get('new_state')
+        order.order_state = new_state
+        db.session.commit()
+    return redirect(url_for('orders'))
 
 @app.route('/edit_order/<int:order_id>', methods=['GET', 'POST'])
 def edit_order(order_id):
