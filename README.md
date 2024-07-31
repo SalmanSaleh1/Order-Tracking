@@ -1,5 +1,7 @@
-# Order Tracking System
 
+![Tracking](https://github.com/user-attachments/assets/4bfefa5b-5530-489c-ba1d-ea32cc6b2079)
+
+# OrderSync
 This project is a web application developed as part of a summer training program to address issues observed in the order flow within the company. The idea emerged from identifying inefficiencies in how orders were managed and tracked. This application serves as a suggested solution to streamline the order management process, making it easier to connect between departments, manage orders effectively, and inform customers about the status of their orders.
 
 ## Features
