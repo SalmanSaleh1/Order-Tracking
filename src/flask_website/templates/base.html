@@ -15,56 +15,26 @@
 
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f8f9fa;
-        }
-        .navbar {
-            background-color: #343a40;
-        }
-        .navbar-brand, .nav-link {
-            color: #ffffff !important;
-        }
-        .nav-link:hover {
-            color: #f8f9fa !important;
-            text-decoration: underline;
-        }
-        .card {
-            border: 1px solid #007bff;
-            border-radius: 0.5rem;
-            transition: transform 0.2s;
-        }
-        .card:hover {
-            transform: scale(1.02);
-        }
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
-        }
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #0056b3;
-        }
-    </style>
 </head>
 
 <body>
 
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-dark">
-        <a class="navbar-brand" href="/">Order Tracking</a>
+        <a class="navbar-brand" href="/">
+            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo">
+           
+        </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav mr-auto">
+        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+            <ul class="navbar-nav">
                 <li class="nav-item">
                     <a class="nav-link" href="/orders">Orders</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/order_history">Order History</a>
+                    <a class="nav-link" href="/order_history">History</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/order_info">API</a>

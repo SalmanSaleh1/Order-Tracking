@@ -23,9 +23,10 @@ def home():
 
 @app.route('/orders')
 def orders():
-    # Fetch orders sorted by order_id in descending order (newest first)
-    last_orders = AddOrder.query.order_by(AddOrder.order_id.desc()).limit(6).all()
+    # Fetch orders that are not in the 'completed' state, sorted by order_id in descending order (newest first)
+    last_orders = AddOrder.query.filter(AddOrder.order_state != 'completed').order_by(AddOrder.order_id.desc()).limit(6).all()
     return render_template('orders.html', last_orders=last_orders)
+
 
 @app.route('/edit_order/<int:order_id>', methods=['GET', 'POST'])
 def edit_order(order_id):

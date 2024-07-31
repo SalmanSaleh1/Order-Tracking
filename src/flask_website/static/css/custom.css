@@ -1,0 +1,118 @@
+body {
+    background-color: #eef2f5; /* Light background for a clean look */
+    font-family: 'Roboto', sans-serif;
+}
+
+.navbar {
+    background-color: #343a40; /* Dark gray for the navbar */
+}
+
+.navbar-brand img {
+    height: 60px; /* Logo height */
+    margin-right: 10px; /* Space between logo and text */
+}
+
+.navbar-brand, .nav-link {
+    color: #ffffff; /* White text for navbar links */
+    transition: color 0.3s; /* Smooth transition for hover effects */
+    font-size: 1.1rem; /* Increased font size */
+}
+
+.nav-link:hover {
+    color: #ffc107; /* Yellow text on hover */
+    text-decoration: underline; /* Underline on hover */
+}
+
+.navbar-nav {
+    flex-direction: row; /* Ensure items are in a row */
+}
+
+.card {
+    border: none; /* Remove default card border */
+    border-radius: 12px; /* Rounded corners for the card */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15); /* Soft shadow for the card */
+    background: linear-gradient(135deg, #ffffff 0%, #f0f4f8 100%); /* Gradient background */
+    transition: transform 0.3s, box-shadow 0.3s; /* Transition effects */
+}
+
+.card:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2); /* More pronounced shadow on hover */
+}
+
+.card-header {
+    background-color: #007bff; /* Blue background for card header */
+    color: white; /* White text for card header */
+    border-top-left-radius: 12px; /* Match card rounding */
+    border-top-right-radius: 12px; /* Match card rounding */
+    font-weight: bold; /* Bold font for header */
+}
+
+.card-body {
+    padding: 20px; /* Increased padding for card body */
+}
+
+.btn-primary {
+    background-color: #007bff; /* Primary button color */
+    border: none; /* Remove button border */
+    border-radius: 5px; /* Slightly rounded button edges */
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+.btn-secondary {
+    background-color: #6c757d; /* Secondary button color */
+    border: none; /* Remove button border */
+    border-radius: 5px; /* Slightly rounded button edges */
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268; /* Darker gray on hover */
+}
+
+/* Additional styles for improved consistency */
+h1, h2, h3 {
+    color: #212529; /* Darker gray for headers */
+}
+
+p {
+    color: #495057; /* Slightly muted gray for paragraph text */
+}
+
+.container {
+    margin-top: 20px; /* Consistent top margin for containers */
+}
+
+/* New modern color palette for accents */
+.accent-color {
+    color: #17a2b8; /* Teal color for accents */
+}
+
+.footer {
+    background-color: #343a40; /* Dark gray for footer */
+    color: #ffffff; /* White text for footer */
+    text-align: center;
+    padding: 10px 0;
+}
+
+.order-state-circle {
+    display: inline-block;
+    width: 12px; /* Width of the circle */
+    height: 12px; /* Height of the circle */
+    border-radius: 50%; /* Makes the div a circle */
+    margin-right: 5px; /* Space between the circle and the text */
+}
+
+.order-state-circle.in-progress {
+    background-color: rgb(0, 54, 0); /* Color for 'In Progress' */
+}
+
+.order-state-circle.completed {
+    background-color: red; /* Color for 'Completed' */
+}
+
+.order-state-circle.waiting {
+    background-color: orange; /* Color for 'Waiting' */
+}
