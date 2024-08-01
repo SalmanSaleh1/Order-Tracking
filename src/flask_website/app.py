@@ -21,12 +21,16 @@ bcrypt = db_connection.bcrypt
 def home():
     return render_template('home.html')
 
+
+# Routes for orders display
 @app.route('/orders')
 def orders():
     # Fetch orders that are not in the 'completed' state, sorted by order_id in descending order (newest first)
     last_orders = AddOrder.query.filter(AddOrder.order_state != 'completed').order_by(AddOrder.order_id.desc()).limit(6).all()
     return render_template('orders.html', last_orders=last_orders)      
 
+
+# Route for change order state with ajax
 @app.route('/change_order_state/<int:order_id>', methods=['POST'])
 def change_order_state(order_id):
     order = AddOrder.query.get(order_id)
@@ -38,6 +42,7 @@ def change_order_state(order_id):
     return jsonify({'success': False}), 404
 
 
+# Route for edit order information
 @app.route('/edit_order/<int:order_id>', methods=['GET', 'POST'])
 def edit_order(order_id):
     order = AddOrder.query.get_or_404(order_id)
@@ -53,6 +58,7 @@ def edit_order(order_id):
     return render_template('edit_order.html', form=form, order=order)
 
 
+# Route for display order history 
 @app.route('/order_history')
 def order_history():
     # Retrieve orders that are in the 'completed' state
@@ -78,6 +84,7 @@ def add_order():
     return render_template('add_order.html', form=form)
 
 
+# Route for view order page
 @app.route('/view_order/<int:order_id>')
 def view_order(order_id):
     # Retrieve the order by its ID
@@ -85,7 +92,7 @@ def view_order(order_id):
     return render_template('view_order.html', order=order)
 
 
-# api route 
+# Route for Display information API
 @app.route('/api/order/<int:order_id>', methods=['GET'])
 def get_order(order_id):
     order = AddOrder.query.get(order_id)
@@ -100,11 +107,14 @@ def get_order(order_id):
         }, 200
     return {'error': 'Order not found'}, 404
 
+
+# Route for send order information to API
 @app.route('/order_info')
 def order_info():
     return render_template('order_info.html')
 
 
+# Route for delete orders
 @app.route('/delete_order/<int:order_id>', methods=['POST'])
 def delete_order(order_id):
     order = AddOrder.query.get_or_404(order_id)
