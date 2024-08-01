@@ -18,119 +18,148 @@
     </div>
 </div>
 
+<!-- Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmationLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmationLabel">Confirm Deletion</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this order?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteButton">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Full jQuery (necessary for AJAX) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    $(document).ready(function() {
-        function loadOrders() {
-            $.ajax({
-                url: '/api/orders',  // Make sure this endpoint returns the list of orders
-                method: 'GET',
-                success: function(response) {
-                    var ordersContainer = $('#orders-container');
-                    ordersContainer.empty(); // Clear previous orders
-                    
-                    // Filter out completed orders
-                    response.orders.filter(order => order.order_state !== 'completed').forEach(function(order) {
-                        var badgeClass = '';
-                        if (order.order_state === 'in progress') {
-                            badgeClass = 'badge-success';
-                        } else if (order.order_state === 'waiting') {
-                            badgeClass = 'badge-danger';
-                        } else {
-                            badgeClass = 'badge-secondary';
-                        }
-    
-                        var orderCard = `
-                            <div class="col-md-4" id="order-${order.order_id}">
-                                <div class="card mb-3">
-                                    <div class="card-header">
-                                        Order #${order.order_id}
-                                    </div>
-                                    <div class="card-body">
-                                        <h5 class="card-title">${order.order_name}</h5>
-                                        <p class="card-text"><strong>Description:</strong> ${order.order_description}</p>
-                                        <p class="card-text"><strong>Department:</strong> ${order.department_name}</p>
-                                        <p class="card-text">
-                                            <strong>State:</strong>
-                                            <span class="badge ${badgeClass}" id="order-state-${order.order_id}">
-                                                ${order.order_state}
-                                            </span>
-                                        </p>
-                                        <form action="/change_order_state/${order.order_id}" method="post" class="change-state-form" data-order-id="${order.order_id}">
-                                            <select name="new_state" class="form-control">
-                                                <option value="in progress" ${order.order_state === 'in progress' ? 'selected' : ''}>In Progress</option>
-                                                <option value="waiting" ${order.order_state === 'waiting' ? 'selected' : ''}>Waiting</option>
-                                                <option value="completed" ${order.order_state === 'completed' ? 'selected' : ''}>Completed</option>
-                                            </select>
-                                        </form>
-                                        <br>
-                                        <a href="/edit_order/${order.order_id}" class="btn btn-primary">Edit</a>
-                                        <button class="btn btn-danger delete-order" data-order-id="${order.order_id}">Delete</button>
-                                    </div>
+$(document).ready(function() {
+    function loadOrders() {
+        $.ajax({
+            url: '/api/orders',  // Make sure this endpoint returns the list of orders
+            method: 'GET',
+            success: function(response) {
+                var ordersContainer = $('#orders-container');
+                ordersContainer.empty(); // Clear previous orders
+                
+                // Filter out completed orders
+                response.orders.filter(order => order.order_state !== 'completed').forEach(function(order) {
+                    var badgeClass = '';
+                    if (order.order_state === 'in progress') {
+                        badgeClass = 'badge-success';
+                    } else if (order.order_state === 'waiting') {
+                        badgeClass = 'badge-danger';
+                    } else {
+                        badgeClass = 'badge-secondary';
+                    }
+
+                    var orderCard = `
+                        <div class="col-md-4" id="order-${order.order_id}">
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    Order #${order.order_id}
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">${order.order_name}</h5>
+                                    <p class="card-text"><strong>Description:</strong> ${order.order_description}</p>
+                                    <p class="card-text"><strong>Department:</strong> ${order.department_name}</p>
+                                    <p class="card-text">
+                                        <strong>State:</strong>
+                                        <span class="badge ${badgeClass}" id="order-state-${order.order_id}">
+                                            ${order.order_state}
+                                        </span>
+                                    </p>
+                                    <form action="/change_order_state/${order.order_id}" method="post" class="change-state-form" data-order-id="${order.order_id}">
+                                        <select name="new_state" class="form-control">
+                                            <option value="in progress" ${order.order_state === 'in progress' ? 'selected' : ''}>In Progress</option>
+                                            <option value="waiting" ${order.order_state === 'waiting' ? 'selected' : ''}>Waiting</option>
+                                            <option value="completed" ${order.order_state === 'completed' ? 'selected' : ''}>Completed</option>
+                                        </select>
+                                    </form>
+                                    <br>
+                                    <a href="/edit_order/${order.order_id}" class="btn btn-primary">Edit</a>
+                                    <button class="btn btn-danger delete-order" data-order-id="${order.order_id}">Delete</button>
                                 </div>
                             </div>
-                        `;
-                        ordersContainer.append(orderCard);
-                    });
-                },
-                error: function() {
-                    alert('Error loading orders');
-                }
-            });
-        }
-    
-        // Load orders when the page is ready
-        loadOrders();
-        
-        // Update order state and reload orders
-        $(document).on('change', '.change-state-form select[name="new_state"]', function() {
-            var $form = $(this).closest('form');
-            var orderId = $form.data('order-id');
-            var url = $form.attr('action');
-            var newState = $(this).val();
-    
-            $.ajax({
-                type: 'POST',
-                url: url,
-                data: { new_state: newState },
-                success: function(response) {
-                    if (response.success) {
-                        // Reload orders after successful state change
-                        loadOrders();
-                    } else {
-                        alert('Failed to change order state');
-                    }
-                },
-                error: function() {
-                    alert('Error changing order state');
-                }
-            });
+                        </div>
+                    `;
+                    ordersContainer.append(orderCard);
+                });
+            },
+            error: function() {
+                alert('Error loading orders');
+            }
         });
+    }
+
+    // Load orders when the page is ready
+    loadOrders();
     
-        // Delete order via AJAX
-        $(document).on('click', '.delete-order', function() {
-            var orderId = $(this).data('order-id');
-            var $orderCard = $('#order-' + orderId); // Get the order card to remove
-            
-            $.ajax({
-                type: 'POST',
-                url: '/delete_order/' + orderId,
-                success: function(response) {
-                    if (response.success) {
-                        $orderCard.remove(); // Remove the order card from the DOM
-                        alert(response.message); // Show success message
-                    } else {
-                        alert('Failed to delete order');
-                    }
-                },
-                error: function() {
-                    alert('Error deleting order');
+    // Update order state and reload orders
+    $(document).on('change', '.change-state-form select[name="new_state"]', function() {
+        var $form = $(this).closest('form');
+        var orderId = $form.data('order-id');
+        var url = $form.attr('action');
+        var newState = $(this).val();
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: { new_state: newState },
+            success: function(response) {
+                if (response.success) {
+                    // Reload orders after successful state change
+                    loadOrders();
+                } else {
+                    alert('Failed to change order state');
                 }
-            });
+            },
+            error: function() {
+                alert('Error changing order state');
+            }
         });
     });
-    </script>    
+
+    // Delete order via AJAX with confirmation modal
+    let orderIdToDelete = null; // Variable to store the order ID to delete
+    $(document).on('click', '.delete-order', function() {
+        orderIdToDelete = $(this).data('order-id'); // Store the order ID
+        $('#deleteConfirmationModal').modal('show'); // Show the confirmation modal
+    });
+
+    // Confirm delete button in the modal
+    $('#confirmDeleteButton').on('click', function() {
+        var $orderCard = $('#order-' + orderIdToDelete); // Get the order card to remove
+
+        $.ajax({
+            type: 'POST',
+            url: '/delete_order/' + orderIdToDelete,
+            success: function(response) {
+                if (response.success) {
+                    $orderCard.remove(); // Remove the order card from the DOM
+                    alert(response.message); // Show success message
+                    $('#deleteConfirmationModal').modal('hide'); // Hide the modal
+                } else {
+                    alert('Failed to delete order');
+                }
+            },
+            error: function() {
+                alert('Error deleting order');
+            }
+        });
+    });
+});
+</script>    
 
 {% endblock %}

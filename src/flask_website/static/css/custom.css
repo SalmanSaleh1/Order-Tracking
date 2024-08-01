@@ -116,3 +116,21 @@ p {
 .order-state-circle.waiting {
     background-color: orange; /* Color for 'Waiting' */
 }
+
+/* Centering the modal */
+.modal-dialog {
+    display: flex;
+    align-items: center;  /* Vertically center */
+    justify-content: center; /* Horizontally center */
+    min-height: calc(100% - 1rem); /* Prevent overflow */
+}
+
+.modal-content {
+    width: 100%;  /* Full width on small screens */
+    max-width: 500px; /* Max width for larger screens */
+}
+
+/* Optional: Make modal backdrop cover the entire viewport */
+.modal-backdrop {
+    opacity: 0.5; /* Adjust backdrop opacity */
+}
