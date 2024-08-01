@@ -139,8 +139,7 @@ def delete_order(order_id):
     order = AddOrder.query.get_or_404(order_id)
     db.session.delete(order)
     db.session.commit()
-    flash('Order deleted successfully!', 'success')
-    return redirect(request.referrer)
+    return jsonify(success=True, message='Order deleted successfully!')
 
 
 if __name__ == "__main__":
