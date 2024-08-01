@@ -84,6 +84,20 @@ def order_history():
     completed_orders = AddOrder.query.filter_by(order_state='completed').order_by(AddOrder.order_date.desc()).all()
     return render_template('order_history.html', completed_orders=completed_orders)
 
+@app.route('/api/completed_orders', methods=['GET'])
+def get_completed_orders():
+    completed_orders = AddOrder.query.filter_by(order_state='completed').order_by(AddOrder.order_date.desc()).all()
+    orders_list = [
+        {
+            'order_id': order.order_id,
+            'order_name': order.order_name,
+            'order_description': order.order_description,
+            'department_name': order.department_name,
+            'order_state': order.order_state
+        }
+        for order in completed_orders
+    ]
+    return jsonify({'orders': orders_list})
 
 # Route for adding an order
 @app.route('/add_order', methods=['GET', 'POST'])
@@ -139,7 +153,7 @@ def delete_order(order_id):
     order = AddOrder.query.get_or_404(order_id)
     db.session.delete(order)
     db.session.commit()
-    return jsonify(success=True, message='Order deleted successfully!')
+    return jsonify({'success': True, 'message': 'Order deleted successfully!'})
 
 
 if __name__ == "__main__":
