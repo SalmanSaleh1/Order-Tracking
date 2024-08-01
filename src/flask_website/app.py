@@ -2,7 +2,7 @@
 import os 
 
 # ----------------------
-from flask import Flask, render_template, flash, redirect, url_for, request
+from flask import Flask, render_template, flash, redirect, url_for, request, jsonify
 from dotenv import load_dotenv
 
 
@@ -25,7 +25,7 @@ def home():
 def orders():
     # Fetch orders that are not in the 'completed' state, sorted by order_id in descending order (newest first)
     last_orders = AddOrder.query.filter(AddOrder.order_state != 'completed').order_by(AddOrder.order_id.desc()).limit(6).all()
-    return render_template('orders.html', last_orders=last_orders)
+    return render_template('orders.html', last_orders=last_orders)      
 
 @app.route('/change_order_state/<int:order_id>', methods=['POST'])
 def change_order_state(order_id):
@@ -34,7 +34,9 @@ def change_order_state(order_id):
         new_state = request.form.get('new_state')
         order.order_state = new_state
         db.session.commit()
-    return redirect(url_for('orders'))
+        return jsonify({'success': True, 'order_id': order_id, 'new_state': new_state})
+    return jsonify({'success': False}), 404
+
 
 @app.route('/edit_order/<int:order_id>', methods=['GET', 'POST'])
 def edit_order(order_id):

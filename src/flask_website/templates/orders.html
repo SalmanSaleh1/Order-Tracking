@@ -21,17 +21,16 @@
                         <p class="card-text"><strong>Department:</strong> {{ order.department_name }}</p>
                         <p class="card-text">
                             <strong>State:</strong>
-                            <span class="badge {{ 'badge-success' if order.order_state == 'in progress' else 'badge-danger' if order.order_state == 'waiting' else 'badge-secondary' }}">
+                            <span class="badge {{ 'badge-success' if order.order_state == 'in progress' else 'badge-danger' if order.order_state == 'waiting' else 'badge-secondary' }}" id="order-state-{{ order.order_id }}">
                                 {{ order.order_state }}
                             </span>
                         </p>
-                        <form action="{{ url_for('change_order_state', order_id=order.order_id) }}" method="post" class="form-inline">
-                            <select name="new_state" class="form-control mr-2">
+                        <form action="{{ url_for('change_order_state', order_id=order.order_id) }}" method="post" class="change-state-form" data-order-id="{{ order.order_id }}">
+                            <select name="new_state" class="form-control">
                                 <option value="in progress" {% if order.order_state == 'in progress' %}selected{% endif %}>In Progress</option>
                                 <option value="waiting" {% if order.order_state == 'waiting' %}selected{% endif %}>Waiting</option>
                                 <option value="completed" {% if order.order_state == 'completed' %}selected{% endif %}>Completed</option>
                             </select>
-                            <button type="submit" class="btn btn-secondary">Change State</button>
                         </form>
                         <br>
                         <a href="{{ url_for('edit_order', order_id=order.order_id) }}" class="btn btn-primary">Edit</a>
@@ -50,5 +49,46 @@
     </div>
     
 </div>
+
+<!-- Full jQuery (necessary for AJAX) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    $('.change-state-form select[name="new_state"]').on('change', function() {
+        var $form = $(this).closest('form');
+        var orderId = $form.data('order-id');
+        var url = $form.attr('action');
+        var newState = $(this).val();
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: $form.serialize(),
+            success: function(response) {
+                if (response.success) {
+                    var badgeClass = '';
+                    if (response.new_state === 'in progress') {
+                        badgeClass = 'badge-success';
+                    } else if (response.new_state === 'waiting') {
+                        badgeClass = 'badge-danger';
+                    } else {
+                        badgeClass = 'badge-secondary';
+                    }
+                    $('#order-state-' + orderId)
+                        .removeClass('badge-success badge-danger badge-secondary')
+                        .addClass(badgeClass)
+                        .text(response.new_state);
+                } else {
+                    alert('Failed to change order state');
+                }
+            },
+            error: function() {
+                alert('Error changing order state');
+            }
+        });
+    });
+});
+</script>
 
 {% endblock %}
