@@ -8,46 +8,14 @@
     <h1>Orders</h1>
     
     <!-- Display last 6 orders -->
-    <div class="row">
-        {% for order in last_orders %}
-            <div class="col-md-4">
-                <div class="card mb-3">
-                    <div class="card-header">
-                        Order #{{ order.order_id }}
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">{{ order.order_name }}</h5>
-                        <p class="card-text"><strong>Description:</strong> {{ order.order_description }}</p>
-                        <p class="card-text"><strong>Department:</strong> {{ order.department_name }}</p>
-                        <p class="card-text">
-                            <strong>State:</strong>
-                            <span class="badge {{ 'badge-success' if order.order_state == 'in progress' else 'badge-danger' if order.order_state == 'waiting' else 'badge-secondary' }}" id="order-state-{{ order.order_id }}">
-                                {{ order.order_state }}
-                            </span>
-                        </p>
-                        <form action="{{ url_for('change_order_state', order_id=order.order_id) }}" method="post" class="change-state-form" data-order-id="{{ order.order_id }}">
-                            <select name="new_state" class="form-control">
-                                <option value="in progress" {% if order.order_state == 'in progress' %}selected{% endif %}>In Progress</option>
-                                <option value="waiting" {% if order.order_state == 'waiting' %}selected{% endif %}>Waiting</option>
-                                <option value="completed" {% if order.order_state == 'completed' %}selected{% endif %}>Completed</option>
-                            </select>
-                        </form>
-                        <br>
-                        <a href="{{ url_for('edit_order', order_id=order.order_id) }}" class="btn btn-primary">Edit</a>
-                        <form action="{{ url_for('delete_order', order_id=order.order_id) }}" method="post" style="display:inline;">
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
+    <div class="row" id="orders-container">
+        <!-- Orders will be loaded here via AJAX -->
     </div>
 
     <!-- Button to navigate to add_order page -->
     <div class="text-center mb-4">
         <a href="{{ url_for('add_order') }}" class="btn btn-primary btn-lg">Add Order</a>
     </div>
-    
 </div>
 
 <!-- Full jQuery (necessary for AJAX) -->
@@ -55,7 +23,70 @@
 
 <script>
 $(document).ready(function() {
-    $('.change-state-form select[name="new_state"]').on('change', function() {
+    function loadOrders() {
+        $.ajax({
+            url: '/api/orders',  // Make sure this endpoint returns the list of orders
+            method: 'GET',
+            success: function(response) {
+                var ordersContainer = $('#orders-container');
+                ordersContainer.empty(); // Clear previous orders
+                
+                response.orders.forEach(function(order) {
+                    var badgeClass = '';
+                    if (order.order_state === 'in progress') {
+                        badgeClass = 'badge-success';
+                    } else if (order.order_state === 'waiting') {
+                        badgeClass = 'badge-danger';
+                    } else {
+                        badgeClass = 'badge-secondary';
+                    }
+
+                    var orderCard = `
+                            <div class="col-md-4">
+                                <div class="card mb-3">
+                                    <div class="card-header">
+                                        Order #${order.order_id}
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">${order.order_name}</h5>
+                                        <p class="card-text"><strong>Description:</strong> ${order.order_description}</p>
+                                        <p class="card-text"><strong>Department:</strong> ${order.department_name}</p>
+                                        <p class="card-text">
+                                            <strong>State:</strong>
+                                            <span class="badge ${badgeClass}" id="order-state-${order.order_id}">
+                                                ${order.order_state}
+                                            </span>
+                                        </p>
+                                        <form action="/change_order_state/${order.order_id}" method="post" class="change-state-form" data-order-id="${order.order_id}">
+                                            <select name="new_state" class="form-control">
+                                                <option value="in progress" ${order.order_state === 'in progress' ? 'selected' : ''}>In Progress</option>
+                                                <option value="waiting" ${order.order_state === 'waiting' ? 'selected' : ''}>Waiting</option>
+                                                <option value="completed" ${order.order_state === 'completed' ? 'selected' : ''}>Completed</option>
+                                            </select>
+                                        </form>
+                                        <br>
+                                        <a href="/edit_order/${order.order_id}" class="btn btn-primary">Edit</a>
+                                        <form action="/delete_order/${order.order_id}" method="post" style="display:inline;"> <!-- Updated this line -->
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    ordersContainer.append(orderCard);
+                });
+            },
+            error: function() {
+                alert('Error loading orders');
+            }
+        });
+    }
+
+    // Load orders when the page is ready
+    loadOrders();
+    
+    // Update order state without clicking the change state button
+    $(document).on('change', '.change-state-form select[name="new_state"]', function() {
         var $form = $(this).closest('form');
         var orderId = $form.data('order-id');
         var url = $form.attr('action');
@@ -64,13 +95,13 @@ $(document).ready(function() {
         $.ajax({
             type: 'POST',
             url: url,
-            data: $form.serialize(),
+            data: { new_state: newState },
             success: function(response) {
                 if (response.success) {
                     var badgeClass = '';
-                    if (response.new_state === 'in progress') {
+                    if (newState === 'in progress') {
                         badgeClass = 'badge-success';
-                    } else if (response.new_state === 'waiting') {
+                    } else if (newState === 'waiting') {
                         badgeClass = 'badge-danger';
                     } else {
                         badgeClass = 'badge-secondary';
@@ -78,7 +109,7 @@ $(document).ready(function() {
                     $('#order-state-' + orderId)
                         .removeClass('badge-success badge-danger badge-secondary')
                         .addClass(badgeClass)
-                        .text(response.new_state);
+                        .text(newState);
                 } else {
                     alert('Failed to change order state');
                 }

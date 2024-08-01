@@ -22,12 +22,25 @@ def home():
     return render_template('home.html')
 
 
-# Routes for orders display
+# Original route for displaying the orders page
 @app.route('/orders')
 def orders():
-    # Fetch orders that are not in the 'completed' state, sorted by order_id in descending order (newest first)
+    return render_template('orders.html')
+
+
+# Route to fetch orders via AJAX
+@app.route('/api/orders')
+def api_orders():
     last_orders = AddOrder.query.filter(AddOrder.order_state != 'completed').order_by(AddOrder.order_id.desc()).limit(6).all()
-    return render_template('orders.html', last_orders=last_orders)      
+    orders_list = [{
+        'order_id': order.order_id,
+        'order_name': order.order_name,
+        'order_description': order.order_description,
+        'department_name': order.department_name,
+        'order_state': order.order_state
+    } for order in last_orders]
+    
+    return jsonify(orders=orders_list)
 
 
 # Route for change order state with ajax
