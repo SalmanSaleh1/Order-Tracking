@@ -59,16 +59,22 @@ def change_order_state(order_id):
 @app.route('/edit_order/<int:order_id>', methods=['GET', 'POST'])
 def edit_order(order_id):
     order = AddOrder.query.get_or_404(order_id)
-    form = AddOrderForm(obj=order)
-    if form.validate_on_submit():
-        order.order_name = form.order_name.data
-        order.order_description = form.order_description.data
-        order.department_name = form.department_name.data
-        order.order_state = form.order_state.data
-        db.session.commit()
-        flash('Order updated successfully!', 'success')
-        return redirect(url_for('orders'))
-    return render_template('edit_order.html', form=form, order=order)
+    
+    if request.method == 'GET':
+        form = AddOrderForm(obj=order)
+        return render_template('edit_order.html', form=form, order=order)
+    
+    if request.method == 'POST':
+        form = AddOrderForm()
+        if form.validate_on_submit():
+            order.order_name = form.order_name.data
+            order.order_description = form.order_description.data
+            order.department_name = form.department_name.data
+            order.order_state = form.order_state.data
+            db.session.commit()
+            return jsonify({'success': True, 'message': 'Order updated successfully!'})
+        
+        return jsonify({'success': False, 'errors': form.errors})
 
 
 # Route for display order history 

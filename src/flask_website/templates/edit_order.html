@@ -3,36 +3,53 @@
 {% block title %}Edit Order{% endblock %}
 
 {% block body %}
-
 <div class="container">
-    <h1>Edit Order #{{ order.order_id }}</h1>
-    
-    <form method="POST" action="{{ url_for('edit_order', order_id=order.order_id) }}">
+    <h1>Edit Order</h1>
+    <form id="edit-order-form" method="post">
         {{ form.hidden_tag() }}
-        
         <div class="form-group">
-            <label for="order_name">Order Name</label>
+            {{ form.order_name.label(class="form-control-label") }}
             {{ form.order_name(class="form-control") }}
         </div>
-        
         <div class="form-group">
-            <label for="order_description">Order Description</label>
+            {{ form.order_description.label(class="form-control-label") }}
             {{ form.order_description(class="form-control") }}
         </div>
-        
         <div class="form-group">
-            <label for="department_name">Department Name</label>
+            {{ form.department_name.label(class="form-control-label") }}
             {{ form.department_name(class="form-control") }}
         </div>
-        
         <div class="form-group">
-            <label for="order_state">Order State</label>
+            {{ form.order_state.label(class="form-control-label") }}
             {{ form.order_state(class="form-control") }}
         </div>
-        
-        <button type="submit" class="btn btn-primary">Update Order</button>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
     </form>
-    
 </div>
 
+<!-- jQuery (necessary for AJAX) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#edit-order-form').on('submit', function(e) {
+        e.preventDefault(); // Prevent the default form submission
+        $.ajax({
+            url: '{{ url_for("edit_order", order_id=order.order_id) }}',  // Make sure to use the correct URL
+            type: 'POST',
+            data: $(this).serialize(), // Serialize the form data
+            success: function(response) {
+                if (response.success) {
+                    alert(response.message);
+                    window.location.href = "{{ url_for('orders') }}"; // Redirect after success
+                } else {
+                    alert('Failed to update order: ' + response.errors);
+                }
+            },
+            error: function() {
+                alert('An error occurred while updating the order.');
+            }
+        });
+    });
+});
+</script>
 {% endblock %}
