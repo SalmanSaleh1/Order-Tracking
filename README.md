@@ -39,6 +39,28 @@ This will start the application.
 
 Open your web browser and go to http://localhost:5000.
 
+### `.env` file:
+
+Before you start you must provide a `.env` file that conform to
+the following keys and structure.
+
+```ini
+# configurations used by the docker compose file
+
+# web configurations
+WEB_PORT=5000
+
+# db configurations
+DB_PORT=3306
+INIT_FILE=./resources (or where you keep the .sql build script)
+HOSTNAME=test
+MYSQL_DATABASE=root
+MYSQL_ROOT_PASSWORD=changeme
+MYSQL_USER=dbuser
+MYSQL_PASSWORD=changeme
+SCHEMA=schema_name
+```
+
 ## Author
 Salman Saleh Alkhalifah
 
