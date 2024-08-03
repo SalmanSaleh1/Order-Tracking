@@ -17,3 +17,28 @@ This project is a web application developed as part of a summer training program
 ## Future Enhancements
 
 This application serves as the first feature in a broader vision for order management. Future ideas may include advanced analytics, automated notifications, improved user interfaces, user management, and enhanced security measures to further improve usability and functionality.
+
+
+## Getting Started
+
+Follow these steps to set up and run the project:
+
+1. Ensure you have Docker installed on your machine.
+
+2. Ensure you start Docker.
+
+3. Open a terminal and navigate to the project directory.
+
+4. Run the following commands:
+
+   ```bash
+   docker-compose down
+   docker-compose up --build
+   
+This will start the application.
+
+Open your web browser and go to http://localhost:5000.
+
+## Author
+Salman Saleh Alkhalifah
+
