@@ -47,18 +47,16 @@ the following keys and structure.
 ```ini
 # configurations used by the docker compose file
 
-# web configurations
 WEB_PORT=5000
-
-# db configurations
 DB_PORT=3306
-INIT_FILE=./resources (or where you keep the .sql build script)
-HOSTNAME=test
-MYSQL_DATABASE=root
+INIT_FILE=./resources
+HOSTNAME=test1
+MYSQL_DATABASE=order_tracking
 MYSQL_ROOT_PASSWORD=changeme
-MYSQL_USER=dbuser
+MYSQL_USER=dbuser1
 MYSQL_PASSWORD=changeme
-SCHEMA=schema_name
+SCHEMA=order_tracking
+SECRET_KEY=my_secret_key_here
 ```
 
 ## Author
