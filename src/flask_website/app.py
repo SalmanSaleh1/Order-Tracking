@@ -31,7 +31,7 @@ def orders():
 # Route to fetch orders via AJAX
 @app.route('/api/orders')
 def api_orders():
-    last_orders = AddOrder.query.filter(AddOrder.order_state != 'completed').order_by(AddOrder.order_id.desc()).limit(6).all()
+    last_orders = AddOrder.query.filter(AddOrder.order_state != 'completed').order_by(AddOrder.order_id.desc()).all()
     orders_list = [{
         'order_id': order.order_id,
         'order_name': order.order_name,

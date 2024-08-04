@@ -134,3 +134,8 @@ p {
 .modal-backdrop {
     opacity: 0.5; /* Adjust backdrop opacity */
 }
+
+.scrollable-container {
+    max-height: 900px; /* Set the maximum height as needed */
+    overflow-y: auto;
+}
