@@ -51,7 +51,7 @@ def change_order_state(order_id):
         new_state = request.form.get('new_state')
         order.order_state = new_state
         db.session.commit()
-        flash('State of odred updated successfully!!', 'success')
+        flash('State of odred updated successfully!', 'success')
         return jsonify({'success': True, 'order_id': order_id, 'new_state': new_state})
     return jsonify({'success': False}), 404
 

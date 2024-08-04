@@ -7,8 +7,21 @@
 <div class="container">
     <h1>Order History</h1>
     
+    <!-- Notification section -->
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+        <div class="alert-container">
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% endwith %}
+    
     <!-- Display completed orders -->
-    <div class="row" id="orders-container">
+    <div class="row scrollable-container" id="orders-container" style="max-height: 1200px; overflow-y: auto;">
         <!-- Orders will be loaded here via AJAX -->
     </div>
 </div>
@@ -41,14 +54,15 @@
 <script>
     $(document).ready(function() {
         var orderIdToDelete; // Variable to store the ID of the order to delete
+        var offset = 0; // Offset for pagination
+        const limit = 6; // Number of orders to load each time
 
         function loadCompletedOrders() {
             $.ajax({
-                url: '/api/completed_orders',  // API endpoint to fetch completed orders
+                url: '/api/completed_orders?offset=' + offset + '&limit=' + limit,  // API endpoint to fetch completed orders with pagination
                 method: 'GET',
                 success: function(response) {
                     var ordersContainer = $('#orders-container');
-                    ordersContainer.empty(); // Clear previous orders
                     
                     response.orders.forEach(function(order) {
                         var orderCard = `
@@ -70,6 +84,14 @@
                         `;
                         ordersContainer.append(orderCard);
                     });
+
+                    // Update offset for next load
+                    offset += response.orders.length;
+
+                    // Hide "Load More" button if no more orders
+                    if (response.orders.length < limit) {
+                        $('#loadMoreOrders').hide(); // Hide button if there are no more orders
+                    }
                 },
                 error: function() {
                     alert('Error loading completed orders');
@@ -79,6 +101,11 @@
 
         // Load completed orders when the page is ready
         loadCompletedOrders();
+
+        // Load more orders on button click
+        $('#loadMoreOrders').click(function() {
+            loadCompletedOrders();
+        });
 
         // Show confirmation modal on delete button click
         $(document).on('click', '.delete-order', function() {
@@ -95,7 +122,7 @@
                     if (response.success) {
                         loadCompletedOrders(); // Reload the completed orders
                         $('#deleteConfirmationModal').modal('hide'); // Hide the modal
-                        alert(response.message); // Show success message
+                        flashNotification(response.message, 'success'); // Show success notification
                     } else {
                         alert('Failed to delete order');
                     }
@@ -105,6 +132,20 @@
                 }
             });
         });
+
+        // Function to show flash notification
+        function flashNotification(message, category) {
+            var alertHtml = `<div class="alert alert-${category} alert-dismissible fade show" role="alert">
+                                ${message}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>`;
+            $('.alert-container').append(alertHtml);
+            setTimeout(() => {
+                $('.alert').alert('close');
+            }, 5000); // Automatically close after 5 seconds
+        }
     });
 </script>
 
