@@ -51,6 +51,7 @@ def change_order_state(order_id):
         new_state = request.form.get('new_state')
         order.order_state = new_state
         db.session.commit()
+        flash('State of odred updated successfully!!', 'success')
         return jsonify({'success': True, 'order_id': order_id, 'new_state': new_state})
     return jsonify({'success': False}), 404
 
@@ -72,6 +73,7 @@ def edit_order(order_id):
             order.department_name = form.department_name.data
             order.order_state = form.order_state.data
             db.session.commit()
+            flash('Order updated successfully!', 'success')
             return jsonify({'success': True, 'message': 'Order updated successfully!'})
         
         return jsonify({'success': False, 'errors': form.errors})
@@ -147,13 +149,19 @@ def order_info():
     return render_template('order_info.html')
 
 
-# Route for delete orders
+# Route for deleting orders
 @app.route('/delete_order/<int:order_id>', methods=['POST'])
 def delete_order(order_id):
-    order = AddOrder.query.get_or_404(order_id)
-    db.session.delete(order)
-    db.session.commit()
-    return jsonify({'success': True, 'message': 'Order deleted successfully!'})
+    order = AddOrder.query.get_or_404(order_id)  # Fetch the order or return a 404 if not found
+    try:
+        db.session.delete(order)
+        db.session.commit()
+        flash('Order deleted successfully!', 'success')  # Flash message for the order deletion
+        return {'success': True, 'message': 'Order deleted successfully!'}
+    except Exception as e:
+        db.session.rollback()  # Rollback the session in case of an error
+        flash('Failed to delete order.', 'danger')  # Flash message for failure
+        return {'success': False, 'message': str(e)}  # Return error message
 
 
 if __name__ == "__main__":
