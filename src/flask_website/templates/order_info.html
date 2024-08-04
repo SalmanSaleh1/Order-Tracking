@@ -5,10 +5,12 @@
 {% block body %}
 <div class="container">
     <h1 class="my-4">Order Information</h1>
+    <p class="text-muted">Please enter your Order ID below to retrieve the order information. The order state will indicate whether your order is in progress, completed, or waiting.</p>
     <form id="orderForm" class="mb-4">
         <div class="form-group">
             <label for="orderId">Order ID:</label>
             <input type="number" id="orderId" name="orderId" class="form-control" required>
+            <small class="form-text text-muted">Enter the unique ID associated with your order.</small>
         </div>
         <button type="submit" class="btn btn-primary">Get Order</button>
     </form>
