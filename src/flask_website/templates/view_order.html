@@ -5,12 +5,16 @@
 {% block body %}
 
 <div class="container">
-    <h1>Order #{{ order.order_id }}</h1>
-    <p><strong>Name:</strong> {{ order.order_name }}</p>
-    <p><strong>Description:</strong> {{ order.order_description }}</p>
-    <p><strong>Department:</strong> {{ order.department_name }}</p>
-    <p><strong>State:</strong> {{ order.order_state }}</p>
-    <p><strong>Date:</strong> {{ order.order_date }}</p>
+    <h1 class="my-4">Order #{{ order.order_id }}</h1>
+    <div class="card mb-4">
+        <div class="card-body">
+            <p><strong>Name:</strong> <span class="text-muted">{{ order.order_name }}</span></p>
+            <p><strong>Description:</strong> <span class="text-muted">{{ order.order_description }}</span></p>
+            <p><strong>Department:</strong> <span class="text-muted">{{ order.department_name }}</span></p>
+            <p><strong>State:</strong> <span class="text-muted">{{ order.order_state }}</span></p>
+            <p><strong>Date:</strong> <span class="text-muted">{{ order.order_date }}</span></p>
+        </div>
+    </div>
     <a href="{{ url_for('order_history') }}" class="btn btn-primary">Back to History</a>
 </div>
 
